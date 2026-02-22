@@ -126,7 +126,7 @@ class AssetUploaderController extends Controller
         $upload->save();
         }
 
-        return redirect()->route('admin.dvassetupdater.index')
+        return redirect()->route('admin.assetuploader.index')
             ->with('success', 'Uploaded successfully to '.$target['label'].' ('.$relativeSaved.').');
     }
 }
