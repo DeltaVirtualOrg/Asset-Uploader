@@ -50,7 +50,7 @@
             File types & size limits are enforced per target.
           </p>
 
-          <form method="POST" action="{{ route('admin.dvassetupdater.store') }}" enctype="multipart/form-data" class="vstack gap-3">
+          <form method="POST" action="{{ route('admin.assetuploader.store') }}" enctype="multipart/form-data" class="vstack gap-3">
             @csrf
 
             <div>
@@ -98,7 +98,7 @@
               <button class="btn btn-primary">
                 <i class="ph-fill ph-cloud-arrow-up me-1"></i> Upload
               </button>
-              <a class="btn btn-outline-secondary" href="{{ route('admin.dvassetupdater.index') }}">
+              <a class="btn btn-outline-secondary" href="{{ route('admin.assetuploader.index') }}">
                 <i class="ph-fill ph-arrow-clockwise me-1"></i> Reset
               </a>
             </div>
