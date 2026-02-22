@@ -2,7 +2,7 @@
 
 namespace Modules\AssetUploader\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use use App\Contracts\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
