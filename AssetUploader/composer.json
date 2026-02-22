@@ -1,0 +1,28 @@
+{
+  "name": "deltavirtual/assetuploader-module",
+  "type": "phpvms-module",
+  "description": "Asset Uploader module for phpVMS v7",
+  "authors": [
+    {
+      "name": "",
+      "email": ""
+    }
+  ],
+  "require": {
+    "composer/installers": "~1.0"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Modules\\\\AssetUploader\\\\Providers\\\\AppServiceProvider",
+        "Modules\\\\AssetUploader\\\\Providers\\\\RouteServiceProvider"
+      ],
+      "aliases": {}
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "Modules\\\\AssetUploader\\\\": "."
+    }
+  }
+}
