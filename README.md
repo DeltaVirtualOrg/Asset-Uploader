@@ -1,30 +1,23 @@
 # AssetUploader (phpVMS v7)
 
-Admin-only addon module for **phpVMS v7** that lets staff upload files into **pre-approved (whitelisted) folders** on your server (ex: SPTheme banners, awards, tours, events, downloads). Each destination (“target”) can enforce its own file types, max size, and helper rules.
+Admin-only module for **phpVMS v7** that lets staff upload files into **pre-approved (whitelisted) folders** on your server (ex: SPTheme banners, awards, tours, events, downloads). Each destination (“target”) can enforce its own file types, max size, and helper rules.
 
-> Built for Delta Virtual / SPTheme layouts, but configurable for any phpVMS v7 site.
+This build is based on the **DVAssetUploader** module skeleton (phpVMS-style providers) so **phpVMS Updater** can discover and run module migrations.
 
 ---
 
 ## Features
 
-- ✅ Upload to **specific approved folders** (targets) you define
-- ✅ Per-target rules:
+- Upload to **approved folders** (“targets”) you define
+- Per-target rules:
   - allowed file extensions
   - max file size
   - naming mode: original or unique
   - optional overwrite (if enabled)
-  - optional UI hint (ex: image dimension requirements)
-- ✅ Logs uploads to DB table `asset_uploads` (shows “Recent Uploads” list)
-- ✅ Adds an Admin → Addons menu link (when enabled)
-- ✅ Safe destination handling (prevents path traversal outside allowed roots)
-
----
-
-## Screens / Where to find it
-
-- Admin page:  
-  `/admin/asset-uploader`
+  - optional UI hint (ex: required image dimensions)
+- Logs uploads to DB table `asset_uploads` (shows “Recent Uploads”)
+- Adds an **Admin → Addons** link
+- Safe destination handling (prevents saving outside allowed roots)
 
 ---
 
@@ -32,36 +25,62 @@ Admin-only addon module for **phpVMS v7** that lets staff upload files into **pr
 
 - phpVMS v7
 - PHP 8.1+
-- Laravel file upload limits configured appropriately (see below)
+- Writable target folders (permissions)
+- Recommended: access to phpVMS **Updater** (`/update`) for migrations
 
 ---
 
-## Installation
+## Installation (recommended: no SSH)
 
-1. Upload the module to:
+> **Important:** avoid nested folders. After install, you must have:
+> `modules/AssetUploader/module.json` (not `modules/AssetUploader/AssetUploader/module.json`)
+
+1. Upload/unzip the module to:
    ```
    /modules/AssetUploader
    ```
 
-2. Run the migrations:
-   ```bash
-   php artisan module:migrate AssetUploader
-   ```
-   > If your install uses standard migrations for modules, try:
-   ```bash
-   php artisan migrate
-   ```
+2. Enable the module:
+   - Admin → **Addons → Modules** → Enable **AssetUploader**
 
-3. Clear caches (recommended):
-   ```bash
-   php artisan config:clear
-   php artisan cache:clear
-   ```
+3. Run migrations via phpVMS Updater:
+   - Visit: `https://your-site.com/update`
 
-4. Visit:
-   ```
-   /admin/asset-uploader
-   ```
+4. Clear cache (recommended):
+   - Admin → Maintenance → **Clear Application Cache**
+   - Or (CLI): `php artisan optimize:clear`
+
+5. Open the uploader:
+   - `https://your-site.com/admin/asset-uploader`
+
+---
+
+## Migrations (how phpVMS runs them)
+
+This module registers migrations the phpVMS way:
+
+- `Providers/AppServiceProvider.php` calls:
+  ```php
+  $this->loadMigrationsFrom(__DIR__ . '/../Database/migrations');
+  ```
+
+When you visit **`/update`**, phpVMS runs pending migrations (including module migrations) and will create:
+
+- `asset_uploads` table
+
+### If /update does not run the migration
+
+Some hosts block updater access or caching can interfere. Try:
+
+1) Clear bootstrap caches:
+- delete `bootstrap/cache/*.php` (or run `php artisan optimize:clear`)
+
+2) Revisit `/update`
+
+3) If you have CLI access, you can run ONLY this module’s migration:
+```bash
+php artisan migrate --path=modules/AssetUploader/Database/migrations --force
+```
 
 ---
 
@@ -73,17 +92,14 @@ Edit:
 ```
 
 ### Middleware (important)
-By default, the module routes are protected with:
-
+Default:
 ```php
 'middleware' => ['web', 'auth', 'role:admin'],
 ```
 
 ✅ `role:admin` is recommended for phpVMS admin addon routes.
 
-> If you try using Laratrust `ability:*` middleware, note that Laratrust `ability`
-> expects multiple parameters (roles + permissions) and `ability:admin` will throw an argument error.
-> Use `role:admin` unless you *know* your Laratrust config and parameters.
+> Laratrust `ability` middleware requires roles + permissions parameters. Avoid `ability:admin` (it will throw “Too few arguments…”).
 
 ---
 
@@ -98,17 +114,17 @@ Example:
 
   'sptheme_banners' => [
     'label' => 'SPTheme - Banner Images',
-    'base'  => 'public',                 // public_path()
-    'path'  => 'SPTheme/images/banner',  // relative to base
+    'base'  => 'public',
+    'path'  => 'SPTheme/images/banner',
     'allowed_extensions' => ['jpg','jpeg','png','webp','gif'],
     'max_size_kb' => 8192,
-    'naming' => 'unique',                // original|unique
-    'overwrite' => false,                // if true, allows overwrite checkbox
+    'naming' => 'unique',
+    'overwrite' => false,
   ],
 
   'sptheme_awards' => [
     'label' => 'SPTheme - Award Images',
-    'hint'  => 'Awards MUST be 250px × 250px.',   // optional UI helper text
+    'hint'  => 'Awards MUST be 250px × 250px.',
     'base'  => 'public',
     'path'  => 'SPTheme/images/awards',
     'allowed_extensions' => ['png','jpg','jpeg','webp'],
@@ -119,7 +135,7 @@ Example:
 
   'sptheme_tours' => [
     'label' => 'SPTheme - Tour Graphics',
-    'hint'  => 'Tour images MUST be 1024px × 1024px.', // optional UI helper text
+    'hint'  => 'Tour images MUST be 1024px × 1024px.',
     'base'  => 'public',
     'path'  => 'SPTheme/images/tours',
     'allowed_extensions' => ['png','jpg','jpeg','webp'],
@@ -133,63 +149,43 @@ Example:
 
 ### `base` values
 - `public` → uploads under `public_path()` (recommended for theme assets)
-- `storage` → uploads under `storage_path()` (useful for non-public files)
+- `storage` → uploads under `storage_path()` (non-public files)
 
 ---
 
-## Database Logging
+## Troubleshooting
 
-Uploads are recorded in:
-- table: `asset_uploads`
+### “Class … AppServiceProvider not found”
+This usually means the module is installed in a nested folder. Verify:
+- `modules/AssetUploader/module.json` exists
+- `modules/AssetUploader/Providers/AppServiceProvider.php` exists
 
-If you see:
-> `SQLSTATE[42S02]: Base table or view not found: 1146 Table ... asset_uploads doesn't exist`
+If you see `modules/AssetUploader/AssetUploader/...`, move contents up one level.
 
-Run:
-```bash
-php artisan module:migrate AssetUploader
+Clear caches:
+- delete `bootstrap/cache/*.php`, then reload.
+
+### “Too few arguments to Laratrust\Middleware\Ability::handle()”
+Your middleware is set to `ability:admin`. Change it to:
+```php
+'middleware' => ['web','auth','role:admin']
 ```
 
-Uploads can still work without logging (depending on your version), but “Recent Uploads” requires the table.
-
----
-
-## Server / PHP Upload Limits
-
-If uploads fail for larger files, check:
-
-- `upload_max_filesize`
-- `post_max_size`
-- `max_execution_time`
-- your web server limits (Nginx/Apache)
-
-Also ensure the destination folders are writable by the web user.
-
----
-
-## Security Notes
-
-- Upload destinations are restricted to configured targets.
-- Filename input is sanitized and validated.
-- The module prevents saving outside the allowed base path.
+### “Table asset_uploads doesn't exist”
+Run `/update` after enabling the module. If needed (CLI):
+```bash
+php artisan migrate --path=modules/AssetUploader/Database/migrations --force
+```
 
 ---
 
 ## Development Notes
 
-- Routes: `modules/AssetUploader/Routes/web.php`
+- Routes: `modules/AssetUploader/Http/Routes/admin.php`
 - Controller: `modules/AssetUploader/Http/Controllers/Admin/AssetUploaderController.php`
 - View: `modules/AssetUploader/Resources/views/admin/index.blade.php`
 - Config: `modules/AssetUploader/Config/config.php`
-
----
-
-## Roadmap (optional ideas)
-
-- Enforce image dimensions (ex: hard-reject non-1024×1024 tours)
-- Batch uploads (multi-file)
-- Delete/replace assets from the UI (with extra safety)
-- “Quick targets” buttons (Upload Banner / Upload Award)
+- Migration: `modules/AssetUploader/Database/migrations/*create_asset_uploads_table.php`
 
 ---
 
