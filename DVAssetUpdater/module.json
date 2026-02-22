@@ -1,0 +1,20 @@
+{
+  "name": "DVAssetUpdater",
+  "alias": "dvassetupdater",
+  "description": "Admin asset/file uploader with target mappings for phpVMS v7",
+  "keywords": [
+    "phpvms",
+    "admin",
+    "uploader",
+    "assets"
+  ],
+  "active": 1,
+  "order": 0,
+  "providers": [
+    "Modules\\DVAssetUpdater\\Providers\\AppServiceProvider",
+    "Modules\\DVAssetUpdater\\Providers\\RouteServiceProvider"
+  ],
+  "aliases": {},
+  "files": [],
+  "requires": []
+}

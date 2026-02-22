@@ -1,0 +1,28 @@
+{
+  "name": "deltavirtual/dvassetupdater-module",
+  "type": "phpvms-module",
+  "description": "DV Asset Uploader module for phpVMS v7",
+  "authors": [
+    {
+      "name": "",
+      "email": ""
+    }
+  ],
+  "require": {
+    "composer/installers": "~1.0"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Modules\\DVAssetUpdater\\Providers\\AppServiceProvider",
+        "Modules\\DVAssetUpdater\\Providers\\RouteServiceProvider"
+      ],
+      "aliases": {}
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "Modules\\DVAssetUpdater\\": "."
+    }
+  }
+}
