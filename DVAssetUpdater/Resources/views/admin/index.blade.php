@@ -8,8 +8,8 @@
   @if(isset($hasTable) && !$hasTable)
     <div class="alert alert-warning rounded-3 shadow-sm">
       <i class="ph-fill ph-warning me-1"></i>
-      <strong>AssetUploader database table is missing.</strong>
-      Visit <code>/update</code> or run <code>php artisan migrate --path=modules/AssetUploader/Database/migrations</code>.
+      <strong>DVAssetUpdater database table is missing.</strong>
+      Visit <code>/update</code> or run <code>php artisan migrate --path=modules/DVAssetUpdater/Database/migrations</code>.
       Uploading can still work, but “Recent Uploads” logging will be disabled until the migration runs.
     </div>
   @endif
@@ -65,7 +65,7 @@
                   </option>
                 @endforeach
               </select>
-              <div class="form-text">These come from <code>modules/AssetUploader/Config/config.php</code>.</div>
+              <div class="form-text">These come from <code>modules/DVAssetUpdater/Config/config.php</code>.</div>
               <div id="targetHint" class="alert alert-info py-2 px-3 mt-2 mb-0 d-none rounded-3">
                 <i class="ph-fill ph-info me-1"></i> <span class="hint-text"></span>
               </div>
