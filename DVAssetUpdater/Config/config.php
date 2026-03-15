@@ -33,7 +33,7 @@ return [
             'path'  => 'SPTheme/images/banner',
             'allowed_extensions' => ['jpg', 'jpeg', 'png', 'webp', 'gif'],
             'max_size_kb' => 8192,
-            'naming' => 'unique',
+            'naming' => 'original',
             'overwrite' => false,
         ],
 
@@ -44,7 +44,7 @@ return [
             'path'  => 'SPTheme/images/awards',
             'allowed_extensions' => ['jpg', 'jpeg', 'png', 'webp'],
             'max_size_kb' => 8192,
-            'naming' => 'unique',
+            'naming' => 'original',
             'overwrite' => false,
         ],
 
@@ -54,7 +54,7 @@ return [
             'path'  => 'SPTheme/images/events',
             'allowed_extensions' => ['jpg', 'jpeg', 'png', 'webp', 'gif'],
             'max_size_kb' => 8192,
-            'naming' => 'unique',
+            'naming' => 'original',
             'overwrite' => false,
         ],
 
@@ -65,7 +65,7 @@ return [
             'path'  => 'SPTheme/images/tours',
             'allowed_extensions' => ['jpg', 'jpeg', 'png', 'webp'],
             'max_size_kb' => 12288, // 12MB
-            'naming' => 'unique',
+            'naming' => 'original',
             'overwrite' => false,
         ],
 
@@ -76,7 +76,7 @@ return [
             'path'  => 'downloads',
             'allowed_extensions' => ['pdf', 'zip'],
             'max_size_kb' => 51200, // 50MB
-            'naming' => 'unique',
+            'naming' => 'original',
             'overwrite' => false,
         ],
 
